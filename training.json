@@ -1,0 +1,87 @@
+{
+  "title": "Simple OT Simulation Sandbox",
+  "description": "An interactive learning environment containing an attacker node (Kali), a SCADA HMI web portal (Node-RED), and a Software PLC node (OpenPLC) controlling simulated physical elements.",
+  "prerequisites": [],
+  "outcomes": [
+    "Identify default ports and interfaces for industrial SCADA and PLC control services.",
+    "Verify network topologies and isolate attack vectors."
+  ],
+  "state": "RELEASED",
+  "show_stepper_bar": true,
+  "levels": [
+    {
+      "title": "Welcome to the OT Sandbox",
+      "level_type": "INFO_LEVEL",
+      "order": 0,
+      "estimated_duration": 1,
+      "minimal_possible_solve_time": null,
+      "content": "# Operational Technology (OT) Sandbox\n\nWelcome to the Simple OT Simulation Sandbox!\n\nThis training is designed to introduce you to standard industrial protocols and visualization interfaces. You are provided with:\n* An **Attacker Machine (`attacker-host`)** running Kali Linux.\n* A **SCADA HMI Web Portal (`scada-hmi`)** running Node-RED.\n* A **Software PLC Node (`openplc-node`)** running OpenPLC v3."
+    },
+    {
+      "title": "Access the Attacker Host",
+      "level_type": "ACCESS_LEVEL",
+      "order": 1,
+      "estimated_duration": 2,
+      "minimal_possible_solve_time": null,
+      "passkey": "start",
+      "cloud_content": "Your first task is to access the Kali Linux GUI console.\n\n### Access Instructions:\n1. On the topology graph, select **`attacker-host`**.\n2. Click the **Web Console** link to open a new tab containing the Guacamole interface.\n3. Submit the passkey **`start`** to unlock the next level.",
+      "local_content": "Submit the passkey **`start`** to unlock the next level."
+    },
+    {
+      "title": "SCADA HMI Verification",
+      "level_type": "TRAINING_LEVEL",
+      "order": 2,
+      "estimated_duration": 3,
+      "minimal_possible_solve_time": null,
+      "answer": "1880",
+      "answer_variable_name": null,
+      "content": "The SCADA HMI is hosting a Node-RED flow configuration dashboard.\n\nWhat is the default port number of the Node-RED service running on the `scada-hmi` host?",
+      "solution": "Node-RED default web service runs on port **1880**.",
+      "solution_penalized": false,
+      "hints": [
+        {
+          "title": "Port Search",
+          "content": "Check Node-RED standard port. It is usually port 1880.",
+          "hint_penalty": 0,
+          "order": 0
+        }
+      ],
+      "incorrect_answer_limit": 10,
+      "attachments": [],
+      "max_score": 10,
+      "variant_answers": false,
+      "reference_solution": [],
+      "mitre_techniques": [],
+      "expected_commands": [],
+      "commands_required": false
+    },
+    {
+      "title": "OpenPLC Verification",
+      "level_type": "TRAINING_LEVEL",
+      "order": 3,
+      "estimated_duration": 3,
+      "minimal_possible_solve_time": null,
+      "answer": "8080",
+      "answer_variable_name": null,
+      "content": "The software PLC runs OpenPLC V3 server to handle Ladder Logic code.\n\nWhat is the default web administrator interface port number for OpenPLC running on the `openplc-node` host?",
+      "solution": "OpenPLC web interface runs on port **8080**.",
+      "solution_penalized": false,
+      "hints": [
+        {
+          "title": "Port Search",
+          "content": "Check OpenPLC standard web interface port. It is usually port 8080.",
+          "hint_penalty": 0,
+          "order": 0
+        }
+      ],
+      "incorrect_answer_limit": 10,
+      "attachments": [],
+      "max_score": 10,
+      "variant_answers": false,
+      "reference_solution": [],
+      "mitre_techniques": [],
+      "expected_commands": [],
+      "commands_required": false
+    }
+  ]
+}
