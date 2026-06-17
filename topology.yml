@@ -44,10 +44,6 @@ net_mappings:
     network: mgmt-net
     ip: 10.10.10.10
 
-  - host: scada-hmi
-    network: ot-net
-    ip: 192.168.99.5
-
   - host: openplc-node
     network: ot-net
     ip: 192.168.99.10
