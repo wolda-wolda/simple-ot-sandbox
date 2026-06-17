@@ -48,3 +48,67 @@
     daemon_reload: yes
     state: started
     enabled: yes
+
+- name: Create simulation monitor Python script
+  copy:
+    dest: /opt/simulation_monitor.py
+    content: |
+      import socket
+      import time
+      import os
+
+      READ_REQ = b'\x00\x01\x00\x00\x00\x06\x01\x03\x00\x00\x00\x01'
+
+      def check_register():
+          try:
+              s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+              s.settimeout(2.0)
+              s.connect(('127.0.0.1', 502))
+              s.sendall(READ_REQ)
+              resp = s.recv(1024)
+              s.close()
+              
+              if len(resp) >= 11 and resp[7] == 3:
+                  val = (resp[9] << 8) | resp[10]
+                  return val
+          except Exception as e:
+              pass
+          return None
+
+      def main():
+          while True:
+              val = check_register()
+              if val == 9999:
+                  with open('/root/flag2.txt', 'w') as f:
+                      f.write('FLAG{OT_SABOTAGE_SUCCESS}\n')
+                  os.chmod('/root/flag2.txt', 0o600)
+                  break
+              time.sleep(1.0)
+
+      if __name__ == '__main__':
+          main()
+    mode: '0755'
+
+- name: Create systemd unit file for simulation monitor
+  copy:
+    dest: /etc/systemd/system/simulation-monitor.service
+    content: |
+      [Unit]
+      Description=Simulation Monitor for OT Sabotage
+      After=openplc.service
+
+      [Service]
+      Type=simple
+      ExecStart=/usr/bin/python3 /opt/simulation_monitor.py
+      Restart=always
+      User=root
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Reload systemd, enable, and start simulation-monitor
+  systemd:
+    name: simulation-monitor
+    daemon_reload: yes
+    state: started
+    enabled: yes

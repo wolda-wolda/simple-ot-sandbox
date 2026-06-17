@@ -50,3 +50,10 @@
     name: node-red-contrib-modbus
     path: /root/.node-red
     state: present
+
+- name: Create SCADA flag file
+  copy:
+    dest: /root/flag.txt
+    content: |
+      FLAG{SCADA_EXPLOITED_RCE}
+    mode: '0600'

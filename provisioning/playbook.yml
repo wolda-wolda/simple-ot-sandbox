@@ -1,3 +1,9 @@
+- name: Configure the Gateway Router
+  hosts: ot-router
+  become: yes
+  roles:
+    - router
+
 - name: Configure the Software PLC Node
   hosts: openplc-node
   become: yes

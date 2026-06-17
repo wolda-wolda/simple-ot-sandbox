@@ -4,7 +4,8 @@
   "prerequisites": [],
   "outcomes": [
     "Identify default ports and interfaces for industrial SCADA and PLC control services.",
-    "Verify network topologies and isolate attack vectors."
+    "Exploit unauthenticated HMI services to gain RCE.",
+    "Pivot through a gateway firewall to perform Modbus network injection and OT sabotage."
   ],
   "state": "RELEASED",
   "show_stepper_bar": true,
@@ -28,22 +29,28 @@
       "local_content": "Submit the passkey **`start`** to unlock the next level."
     },
     {
-      "title": "SCADA HMI Verification",
+      "title": "SCADA Exploitation",
       "level_type": "TRAINING_LEVEL",
       "order": 2,
-      "estimated_duration": 3,
+      "estimated_duration": 5,
       "minimal_possible_solve_time": null,
-      "answer": "1880",
+      "answer": "FLAG{SCADA_EXPLOITED_RCE}",
       "answer_variable_name": null,
-      "content": "The SCADA HMI is hosting a Node-RED flow configuration dashboard.\n\nWhat is the default port number of the Node-RED service running on the `scada-hmi` host?",
-      "solution": "Node-RED default web service runs on port **1880**.",
+      "content": "The SCADA HMI on `10.10.10.10` runs an unauthenticated Node-RED interface on port `1880`.\n\nYour task is to access the flow editor from Kali, construct or use a flow to run arbitrary system commands (e.g., an `exec` node), and read the first flag file located at `/root/flag.txt` on the SCADA server.\n\nWhat is the flag?",
+      "solution": "Access the Node-RED flow editor, add an `inject` node, connect it to an `exec` node configured to run `cat /root/flag.txt`, connect that to a `debug` node, and click Deploy. Trigger the inject node to view the flag output `FLAG{SCADA_EXPLOITED_RCE}`.",
       "solution_penalized": false,
       "hints": [
         {
-          "title": "Port Search",
-          "content": "Check Node-RED standard port. It is usually port 1880.",
+          "title": "Access Flow Editor",
+          "content": "From the Kali browser, navigate to `http://10.10.10.10:1880/` to open the Node-RED editor.",
           "hint_penalty": 0,
           "order": 0
+        },
+        {
+          "title": "Executing Commands",
+          "content": "Search the left palette for the 'exec' node, drag it onto the canvas, configure it with the command 'cat /root/flag.txt', wire it to an inject node and a debug node, deploy, and click the inject button.",
+          "hint_penalty": 0,
+          "order": 1
         }
       ],
       "incorrect_answer_limit": 10,
@@ -56,22 +63,28 @@
       "commands_required": false
     },
     {
-      "title": "OpenPLC Verification",
+      "title": "OT Sabotage",
       "level_type": "TRAINING_LEVEL",
       "order": 3,
-      "estimated_duration": 3,
+      "estimated_duration": 10,
       "minimal_possible_solve_time": null,
-      "answer": "8080",
+      "answer": "FLAG{OT_SABOTAGE_SUCCESS}",
       "answer_variable_name": null,
-      "content": "The software PLC runs OpenPLC V3 server to handle Ladder Logic code.\n\nWhat is the default web administrator interface port number for OpenPLC running on the `openplc-node` host?",
-      "solution": "OpenPLC web interface runs on port **8080**.",
+      "content": "Due to firewall rules configured on the gateway router, the Kali host `attacker-host` cannot talk to the PLC (`192.168.99.10`) on Modbus port `502` or Admin port `8080`. However, the SCADA HMI host `scada-hmi` (`10.10.10.10`) is allowed to communicate with it.\n\nUse your SCADA compromise to execute a script or network command to send a Modbus TCP write request to the OpenPLC node (`192.168.99.10:502`) setting the first **Holding Register (address 0)** to a value of **`9999`**.\n\nOnce the simulation monitoring script on the PLC detects this overload value, it will write a second flag to `/root/flag2.txt` on the PLC. Retrieve the flag content (e.g. pivoting via command execution on the HMI or using openplc commands).\n\nWhat is the sabotage flag?",
+      "solution": "You can send Modbus commands from `scada-hmi` using python (e.g., executing a script that constructs a raw Modbus TCP TCP payload to write Holding Register 0 to `9999`). Once sent, read the flag file on the PLC by executing commands or utilizing Node-RED nodes.",
       "solution_penalized": false,
       "hints": [
         {
-          "title": "Port Search",
-          "content": "Check OpenPLC standard web interface port. It is usually port 8080.",
+          "title": "Modbus Scripting",
+          "content": "You can use Python's built-in socket library to construct and send a raw Modbus TCP packet. Writing 9999 (0x270f) to Holding Register 0 uses Modbus Function Code 6 (Write Single Register) or 16 (Write Multiple Registers). Example payload for Function Code 6: \\x00\\x01\\x00\\x00\\x00\\x06\\x01\\x06\\x00\\x00\\x27\\x0f.",
           "hint_penalty": 0,
           "order": 0
+        },
+        {
+          "title": "Reading the PLC Flag",
+          "content": "Once the sabotage is triggered, the simulation daemon on the PLC will write `/root/flag2.txt`. You can use your access on `scada-hmi` to execute an SSH command or use python to read the file, or connect to the OpenPLC SSH if keys are shared.",
+          "hint_penalty": 0,
+          "order": 1
         }
       ],
       "incorrect_answer_limit": 10,
