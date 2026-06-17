@@ -6,7 +6,7 @@ hosts:
     base_box:
       image: kali
       mgmt_user: debian
-    flavor: standard.medium
+    flavor: standard.large
 
   # 2. SCADA/HMI server (runs Node-RED)
   - name: scada-hmi
