@@ -42,13 +42,13 @@
       "hints": [
         {
           "title": "Access Flow Editor",
-          "content": "From the Kali browser, navigate to `http://10.10.10.10:1880/` to open the Node-RED editor.",
+          "content": "From Kali, you can scan `10.10.10.10` with **`nmap`** (e.g., `nmap -p 1880 10.10.10.10`) to confirm the port is open. Then, open the Kali web browser and go to `http://10.10.10.10:1880/` to open the Node-RED editor.",
           "hint_penalty": 0,
           "order": 0
         },
         {
           "title": "Executing Commands",
-          "content": "Search the left palette for the 'exec' node, drag it onto the canvas, configure it with the command 'cat /root/flag.txt', wire it to an inject node and a debug node, deploy, and click the inject button.",
+          "content": "In the Node-RED editor, search the left palette for the **`exec` node** (under the 'function' category). Drag it onto the canvas, configure it with the command 'cat /root/flag.txt', wire it to an `inject` node (to trigger it) and a `debug` node (to see the stdout), deploy the flow, and click the inject button.",
           "hint_penalty": 0,
           "order": 1
         }
@@ -76,13 +76,13 @@
       "hints": [
         {
           "title": "Modbus Scripting",
-          "content": "You can use Python's built-in socket library to construct and send a raw Modbus TCP packet. Writing 9999 (0x270f) to Holding Register 0 uses Modbus Function Code 6 (Write Single Register) or 16 (Write Multiple Registers). Example payload for Function Code 6: \\x00\\x01\\x00\\x00\\x00\\x06\\x01\\x06\\x00\\x00\\x27\\x0f.",
+          "content": "You can write a short **Python script** using the standard `socket` library to construct and send a raw Modbus TCP packet. Setting Register 0 to 9999 (0x270f) uses Modbus Function Code 6 (Write Single Register). Example payload for Function Code 6: \\x00\\x01\\x00\\x00\\x00\\x06\\x01\\x06\\x00\\x00\\x27\\x0f. Send this byte payload directly over a TCP socket to `192.168.99.10` on port `502`.",
           "hint_penalty": 0,
           "order": 0
         },
         {
           "title": "Reading the PLC Flag",
-          "content": "Once the sabotage is triggered, the simulation daemon on the PLC will write `/root/flag2.txt`. You can use your access on `scada-hmi` to execute an SSH command or use python to read the file, or connect to the OpenPLC SSH if keys are shared.",
+          "content": "Once the sabotage is triggered, the simulation daemon on the PLC writes `/root/flag2.txt`. You can use standard **`ssh`** or a python script from the HMI node to connect to the PLC and print the file's contents, or trigger a command from a Node-RED flow to fetch it.",
           "hint_penalty": 0,
           "order": 1
         }
