@@ -23,7 +23,7 @@
   shell: ./install.sh linux
   args:
     chdir: /opt/OpenPLC_v3
-    creates: /opt/OpenPLC_v3/webserver/openplc.db
+    creates: /opt/OpenPLC_v3/start_openplc.sh
 
 - name: Build systemd service unit file for OpenPLC
   copy:
@@ -36,17 +36,20 @@
       [Service]
       Type=simple
       WorkingDirectory=/opt/OpenPLC_v3
-      ExecStart=/usr/bin/python3 /opt/OpenPLC_v3/webserver/webserver.py
+      ExecStart=/opt/OpenPLC_v3/start_openplc.sh
       Restart=always
 
       [Install]
       WantedBy=multi-user.target
 
+- name: Configure OpenPLC to start run mode automatically
+  command: sqlite3 /opt/OpenPLC_v3/webserver/openplc.db "UPDATE settings SET value = 'true' WHERE key = 'Start_run_mode';"
+
 - name: Reload systemd, enable, and start OpenPLC
   systemd:
     name: openplc
     daemon_reload: yes
-    state: started
+    state: restarted
     enabled: yes
 
 - name: Create simulation monitor Python script
