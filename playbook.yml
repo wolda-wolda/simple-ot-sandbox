@@ -1,0 +1,11 @@
+- name: Configure the Software PLC Node
+  hosts: openplc-node
+  become: yes
+  roles:
+    - openplc
+
+- name: Configure the SCADA/HMI Node
+  hosts: scada-hmi
+  become: yes
+  roles:
+    - nodered

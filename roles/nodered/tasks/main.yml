@@ -1,0 +1,52 @@
+---
+- name: Install Node.js and npm
+  apt:
+    name:
+      - nodejs
+      - npm
+    state: present
+    update_cache: yes
+
+- name: Install Node-RED globally
+  npm:
+    name: node-red
+    global: yes
+    state: present
+
+- name: Create systemd unit file for Node-RED
+  copy:
+    dest: /etc/systemd/system/nodered.service
+    content: |
+      [Unit]
+      Description=Node-RED Graphical Flow-builder
+      After=syslog.target network.target
+
+      [Service]
+      Type=simple
+      User=root
+      Group=root
+      WorkingDirectory=/root
+      ExecStart=/usr/bin/env node-red
+      Restart=always
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Start and enable Node-RED service
+  systemd:
+    name: nodered
+    daemon_reload: yes
+    state: started
+    enabled: yes
+
+- name: Ensure Node-RED user directory exists
+  file:
+    path: /root/.node-red
+    state: directory
+    mode: '0755'
+
+- name: Install Modbus node inside Node-RED user directory
+  npm:
+    name: node-red-contrib-modbus
+    path: /root/.node-red
+    state: present
